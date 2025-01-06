@@ -20,16 +20,63 @@ const { NotImplementedError } = require('../extensions/index.js');
  * 
  */
 class VigenereCipheringMachine {
-  encrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  constructor(isDirect = true) {
+    this.isDirect = isDirect;
+    this.alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+
+
+  encrypt(message, key) {
+    if (message === undefined || key === undefined) {
+      throw new Error('Incorrect arguments!');
+    }
+
+    message = message.toUpperCase();
+    key = key.toUpperCase();
+    let encryptedMessage = '';
+    let keyIndex = 0;
+
+    for (let i = 0; i < message.length; i++) {
+      if (this.alphabet.includes(message[i])) {
+        let shift = this.alphabet.indexOf(key[keyIndex % key.length]);
+        let encryptedChar = this.alphabet[(this.alphabet.indexOf(message[i]) + shift) % 26];
+        encryptedMessage += encryptedChar;
+        keyIndex++;
+      } else {
+        encryptedMessage += message[i];
+      }
+    }
+
+
+    return this.isDirect ? encryptedMessage : encryptedMessage.split('').reverse().join('');
+  }
+
+
+  decrypt(message, key) {
+    if (message === undefined || key === undefined) {
+      throw new Error('Incorrect arguments!');
+    }
+
+    message = message.toUpperCase();
+    key = key.toUpperCase();
+    let decryptedMessage = '';
+    let keyIndex = 0;
+
+    for (let i = 0; i < message.length; i++) {
+      if (this.alphabet.includes(message[i])) {
+        let shift = this.alphabet.indexOf(key[keyIndex % key.length]);
+        let decryptedChar = this.alphabet[(this.alphabet.indexOf(message[i]) - shift + 26) % 26];
+        decryptedMessage += decryptedChar;
+        keyIndex++;
+      } else {
+        decryptedMessage += message[i];
+      }
+    }
+
+
+    return this.isDirect ? decryptedMessage : decryptedMessage.split('').reverse().join('');
   }
 }
-
 module.exports = {
   VigenereCipheringMachine
 };
